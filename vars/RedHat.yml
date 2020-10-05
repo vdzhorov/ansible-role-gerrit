@@ -1,0 +1,5 @@
+---
+gerrit_download_url: https://gerrit-releases.storage.googleapis.com/gerrit-{{ gerrit_version }}.war
+gerrit_java_path: /usr/bin/java
+gerrit_pid_dir: /var/run
+...
