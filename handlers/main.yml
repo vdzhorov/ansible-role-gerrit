@@ -1,0 +1,6 @@
+---
+- name: restart gerrit
+  service:
+    name: gerrit
+    state: restarted
+...
