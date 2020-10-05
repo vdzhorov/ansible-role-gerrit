@@ -1,0 +1,113 @@
+---
+- name: Gather OS specific variables.
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_os_family }}-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_os_family }}-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}-{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - vars
+
+- name: Create Gerrit group.
+  group:
+    name: "{{ gerrit_group }}"
+    state: present
+
+- name: Create Gerrit user.
+  user:
+    name: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+    state: present
+
+- name: Create Gerrit home dir.
+  file:
+    path: "{{ gerrit_home_dir }}"
+    owner: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+    mode: 0755
+    state: directory
+
+- name: Create Gerrit directories.
+  file:
+    path: "{{ item }}"
+    owner: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+    mode: 0755
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ gerrit_home_dir }}/{{ gerrit_site }}/etc"
+    - "{{ gerrit_home_dir }}/{{ gerrit_site }}/lib"
+    - "{{ gerrit_home_dir }}/{{ gerrit_site }}/static"
+    - "{{ gerrit_home_dir }}/{{ gerrit_site }}/hooks"
+    - "{{ gerrit_home_dir }}/{{ gerrit_site }}/plugins"
+    - "{{ gerrit_cache_directory }}"
+
+- name: Create Gerrit config
+  template:
+    src: gerrit.config.j2
+    dest: "{{ gerrit_home_dir }}/{{ gerrit_site }}/etc/gerrit.config"
+    owner: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+    mode: 0644
+  notify: restart gerrit
+  register: gerrit_config
+
+- name: Create Gerrit secure config.
+  template:
+    src: secure.config.j2
+    dest: "{{ gerrit_home_dir }}/{{ gerrit_site }}/etc/secure.config"
+    owner: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+    mode: 0644
+  notify: restart gerrit
+  register: gerrit_secure_config
+
+- name: Download Gerrit {{ gerrit_version }}.
+  get_url:
+    url: "{{ gerrit_download_url }}"
+    dest: "{{ gerrit_home_dir }}"
+    owner: "{{ gerrit_user }}"
+    group: "{{ gerrit_group }}"
+
+- name: Create Gerrit systemd unit file.
+  template:
+    src: gerrit.service.j2
+    dest: /etc/systemd/system/gerrit.service
+  register: gerrit_systemd
+
+- name: Reload systemd.
+  shell: systemctl daemon-reload
+  when: gerrit_systemd.changed
+
+- name: Ensure Gerrit service is stopped on config change.
+  service:
+    name: gerrit
+    state: stopped
+  when: gerrit_config.changed or gerrit_secure_config.changed
+
+- name: Gerrit Init.
+  shell: "{{ gerrit_java_path }} -jar gerrit-{{ gerrit_version }}.war init --batch --no-auto-start -d {{ gerrit_home_dir }}/{{ gerrit_site }}"
+  args:
+    chdir: "{{ gerrit_home_dir }}"
+  become: yes
+  become_user: "{{ gerrit_user }}"
+  when: gerrit_config.changed or gerrit_secure_config.changed
+
+- name: Gerrit Reindex.
+  shell: "{{ gerrit_java_path }} -jar gerrit-{{ gerrit_version }}.war reindex -d {{ gerrit_home_dir }}/{{ gerrit_site }}"
+  args:
+    chdir: "{{ gerrit_home_dir }}"
+  become: yes
+  become_user: "{{ gerrit_user }}"
+  when: gerrit_config.changed or gerrit_secure_config.changed
+
+- name: Enable Gerrit service.
+  service:
+    name: gerrit
+    enabled: yes
+...
