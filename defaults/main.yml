@@ -1,0 +1,43 @@
+---
+# Basic config vars
+gerrit_group: gerrit
+gerrit_user: gerrit
+gerrit_version: 3.2.3
+gerrit_home_dir: "/opt/gerrit-{{ gerrit_version }}"
+gerrit_site: site_name
+
+# Database vars
+gerrit_database_type: MYSQL
+gerrit_database_user: gerrit
+gerrit_database_name: gerrit
+gerrit_database_password: gerrit
+gerrit_database_host: localhost
+
+# Gerrit vars
+gerrit_config_base_path: git
+gerrit_config_canonical_weburl: http://localhost
+
+# Gerrit index. Default LUCENE
+gerrit_index_type: LUCENE
+
+# Gerrit auth type
+gerrit_auth_type: HTTP
+
+# Gerrit Java container
+gerrit_container_heap_limit: 1g
+gerrit_container_java_options: -server -XX:+PrintGCDetails -XX:MaxPermSize=256M -Xloggc:/var/gerrit/review/logs/gc.log -Djavax.net.ssl.trustStore=/var/gerrit/review/etc/cacerts -Djavax.net.ssl.trustStorePassword=changeit
+gerrit_container_user: "{{ gerrit_user }}"
+
+# Gerrit sshd
+gerrit_sshd_listen_address: "*:29418"
+gerrit_sshd_threads: 32
+
+# Gerrit httpd
+gerrit_httpd_listen_url: proxy-https://127.0.0.1:8080/
+
+# Gerrit cache
+gerrit_cache_directory: "{{ gerrit_home_dir }}/{{ gerrit_site }}/cache"
+
+# Gerrit receive
+gerrit_receive_checkReferencedObjectsAreReachable: false
+...
