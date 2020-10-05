@@ -1,6 +1,6 @@
 # vdzhorov.gerrit
 
-[![Ansible Role](https://galaxy.ansible.com/vdzhorov/gerrit)
+Ansible Role - (https://galaxy.ansible.com/vdzhorov/gerrit)
 [![Build Status](https://travis-ci.org/vdzhorov/ansible-role-gerrit.svg?branch=main)](https://travis-ci.org/github/vdzhorov/ansible-role-gerrit)
 
 Ansible role for basic Gerrit installation on RHEL 7/8 systems.
