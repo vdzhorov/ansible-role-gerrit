@@ -1,0 +1,27 @@
+[gerrit]
+  basePath = {{ gerrit_config_base_path }}
+  canonicalWebUrl = {{ gerrit_config_canonical_weburl }}
+
+[index]
+  type = {{ gerrit_index_type }}
+
+[auth]
+  type = {{ gerrit_auth_type }}
+
+[container]
+  heapLimit = {{ gerrit_container_heap_limit }}
+  javaOptions = {{ gerrit_container_java_options }}
+  user = {{ gerrit_container_user }}
+
+[sshd]
+  listenAddress = {{ gerrit_sshd_listen_address }}
+  threads = {{ gerrit_sshd_threads }}
+
+[httpd]
+  listenUrl = {{ gerrit_httpd_listen_url }}
+
+[cache]
+  directory = {{ gerrit_cache_directory }}
+
+[receive]
+  checkReferencedObjectsAreReachable = {{ gerrit_receive_checkReferencedObjectsAreReachable }}

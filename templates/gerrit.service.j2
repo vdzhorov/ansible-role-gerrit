@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Web based code review and project management for Git based projects
+After=network.target
+
+[Service]
+Type=simple
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gerrit
+WorkingDirectory={{ gerrit_home_dir }}
+User={{ gerrit_user }}
+ExecStart={{ gerrit_java_path }} -DGerritCodeReview=1 -jar {{ gerrit_home_dir }}/gerrit-{{ gerrit_version }}.war daemon -d {{ gerrit_site }}
+ExecStop=/bin/kill -s SIGINT $MAINPID
+PIDFile={{ gerrit_pid_dir }}/gerrit.pid
+
+[Install]
+WantedBy=multi-user.target

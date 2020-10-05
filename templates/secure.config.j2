@@ -1,0 +1,9 @@
+[database]
+  type = {{ gerrit_database_type }}
+  username = {{ gerrit_database_user }}
+  database = {{ gerrit_database_name }}
+  password = {{ gerrit_database_password }}
+  hostname = {{ gerrit_database_host }}
+{% if gerrit_database_type is defined and gerrit_database_type == 'MYSQL' %}
+  url = jdbc:mysql://{{ gerrit_database_host }}:3306/{{ gerrit_database_name }}?user={{ gerrit_database_user }}&password={{ gerrit_database_password }}&useUnicode=false&characterEncoding=utf8
+{% endif %}
