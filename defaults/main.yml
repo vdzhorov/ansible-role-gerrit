@@ -23,6 +23,14 @@ gerrit_index_type: LUCENE
 # Gerrit auth type
 gerrit_auth_type: HTTP
 
+# Gerrit email config
+gerrit_sendemail_enable: true
+gerrit_sendemail_smtpServer: localhost
+gerrit_sendemail_smtpServerPort: 25
+gerrit_sendemail_sslVerify: false
+gerrit_sendemail_smtpUser: ""
+gerrit_sendemail_smtpPass: ""
+
 # Gerrit Java container
 gerrit_container_heap_limit: 1g
 gerrit_container_java_options: -server -XX:+PrintGCDetails -XX:MaxPermSize=256M -Xloggc:/var/gerrit/review/logs/gc.log -Djavax.net.ssl.trustStore=/var/gerrit/review/etc/cacerts -Djavax.net.ssl.trustStorePassword=changeit

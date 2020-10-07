@@ -8,6 +8,14 @@
 [auth]
   type = {{ gerrit_auth_type }}
 
+[sendemail]
+  enable = {{ gerrit_sendemail_enable }}
+  {% if gerrit_sendemail_enable == 'true' %}smtpServer = {{ gerrit_sendemail_smtpServer }}{% endif %}
+  {% if gerrit_sendemail_enable == 'true' %}smtpServerPort = {{ gerrit_sendemail_smtpServerPort }}{% endif %}
+  {% if gerrit_sendemail_enable == 'true' %}gerrit_sendemail_sslVerify = {{ gerrit_sendemail_sslVerify }}{% endif %}
+  {% if gerrit_sendemail_enable == 'true' and gerrit_sendemail_smtpUser|length > 1 %}{{ gerrit_sendemail_smtpUser }}{% endif %}
+  {% if gerrit_sendemail_enable == 'true' and gerrit_sendemail_smtpPass|length > 1 %}{{ gerrit_sendemail_smtpPass }}{% endif %}
+
 [container]
   heapLimit = {{ gerrit_container_heap_limit }}
   javaOptions = {{ gerrit_container_java_options }}
