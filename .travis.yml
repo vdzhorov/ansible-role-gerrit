@@ -24,6 +24,7 @@ install:
   # Ansible dependencies
   - ansible-galaxy install robertdebock.java
   - ansible-galaxy install geerlingguy.nginx
+  - ansible-galaxy install bertvv.mariadb
 
 script:
   # Basic role syntax check
