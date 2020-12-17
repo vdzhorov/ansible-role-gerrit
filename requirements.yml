@@ -1,0 +1,5 @@
+---
+- name: geerlingguy.git
+- name: robertdebock.java
+- name: geerlingguy.nginx
+- name: bertvv.mariadb
